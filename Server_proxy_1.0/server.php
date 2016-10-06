@@ -1,9 +1,11 @@
+#!/usr/bin/env php
 <?php
 //确保在连接客户端时不会超时
 set_time_limit(0);
 
-$ip = '127.0.0.1';
-$port = 80;
+$conf = (parse_ini_file("conf.ini"));
+$ip = $conf['socket_ip'];
+$port = $conf['socket_port'];
 
 /*
  +-------------------------------
@@ -47,9 +49,14 @@ do {
         echo "socket_accept() failed: reason: " . socket_strerror($msgsock) . "\n";
         break;
     } else {
-
-        //发到客户端
-        $msg ="晚上吼哇\n";
+      // 构建响应报文
+    $post = "hello world";
+    $header = "HTTP/1.1 302 OK\r\n";  
+    $header.= "Content-Type: text/html;charset=ISO-8859-1\r\n";
+    $header.= "Location: http://www.baidu.com\r\n";
+    $header.= "\r\n";
+    $msg = $header.$post;  
+       //发到客户端
         //写数据到socket缓存
         socket_write($msgsock, $msg, strlen($msg));
 
