@@ -50,13 +50,20 @@ do {
         break;
     } else {
       // 构建响应报文
-    $post = "hello world";
-    $header = "HTTP/1.1 302 OK\r\n";  
-    $header.= "Content-Type: text/html;charset=ISO-8859-1\r\n";
-    $header.= "Location: http://www.baidu.com\r\n";
-    $header.= "\r\n";
-    $msg = $header.$post;  
+//    $post = '{"1":"2"}';
+//    $header = "HTTP/1.1 200 OK\r\n";  
+//    $header.= "Content-Type: text/json;charset=ISO-8859-1\r\n";
+//    $header.= "\r\n";
+//    $msg = $header.$post;  
        //发到客户端
+      //根据域名，使用curl工具，获取目标网址的响应报文
+      ob_start();
+      $ch = curl_init();
+      curl_setopt($ch, CURLOPT_HEADER, true);
+      curl_setopt($ch, CURLOPT_URL, "http://www.baidu.com");
+      $msg = curl_exec($ch);
+      curl_close($ch);
+      $msg = ob_get_clean();
         //写数据到socket缓存
         socket_write($msgsock, $msg, strlen($msg));
 
